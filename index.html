@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html lang="en">
+    <head>
+        <title>MOVIE RATING</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="http://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <h2>Movie Review Page</h2>
+            <form id="reviewForm" method="post">
+
+                <div class="form-group">
+                    <label>User Name : </label>
+                    <input type="text" id="user" name="user">
+                </div>
+                <div class="form-group">
+                    <label>Name of Movie : </label>
+                    <input type="text" id="name" name="name">
+                </div>
+                <div class="form-group">
+                    <label> Rating out of 10 : </label> 
+                    <input type=number max="10" min="1" id="stars">
+                </div>
+                <div class="form-group">
+                    <label>Remarks : </label>
+                    <input type="text" placeholder="Enter comments" id="comments">
+                </div>
+                <input type="button" value="Post Review" onclick="saveReview();" class="btn btn-primary">
+            </form>
+        </div>
+        <script>
+            $("#user").focus();
+            function validateAndGetFormData() {
+                var uservar = $("#user").val();
+                if (uservar === "") {
+                    alert("User Name Required");
+                    $("#user").focus();
+                    return "";
+                }
+                var namevar = $("#name").val();
+                if (namevar === "") {
+                    alert("Dish Name Required");
+                    $("#name").focus();
+                    return "";
+                }
+                var starsvar = $("#stars").val();
+                if (starsvar === "") {
+                    alert("Star Rating Required");
+                    $("#stars").focus();
+                    return "";
+                }
+                var commentsvar = $("#comments").val();
+                if (commentsvar === "") {
+                    alert("Review Required");
+                    $("#comments").focus();
+                    return "";
+                }
+                var jsonStrObj = {
+                    user: uservar,
+                    name: namevar,
+                    stars: starsvar,
+                    comments: commentsvar,
+                };
+                return JSON.stringify(jsonStrObj);
+            }
+
+            function resetForm() {
+                $("#user").val("");
+                $("#name").val("");
+                $("#stars").val("");
+                $("#comments").val("");
+                $("#comments").focus();
+            }
+            setBaseUrl("http://api.login2explore.com:5577");
+            function saveReview() {
+                var jsonStr = validateAndGetFormData();
+                if (jsonStr === "") {
+                    return;
+                }
+                var putReqStr = createPUTRequest("90935368|-31948797370268049|90932126", jsonStr, "Movie", "Reviews");
+                alert(putReqStr);
+                jQuery.ajaxSetup({async: false});
+                var resultObj = executeCommand(putReqStr, imlPartUrl);
+                alert(JSON.stringify(resultObj));
+                jQuery.ajaxSetup({async: true});
+                resetForm();
+            }
+        </script>
+    </body>
+</html>
